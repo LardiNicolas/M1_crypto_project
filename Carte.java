@@ -1,10 +1,3 @@
-package projet_crypto;
-
-
-/**
- *
- * @author fr108211
- */
 public class Carte {
 
     int valeur;
@@ -13,6 +6,7 @@ public class Carte {
     public int getSigne() {
         return signe;
     }
+    public int getValeur() { return valeur; }
 
     public Carte() {
         valeur = 1 + (int) Math.floor(Math.random() * 13);
@@ -28,17 +22,17 @@ public class Carte {
     public String toString() {
         switch(signe){
             case 0:
-                return "Carte: " + valeur + ", Pique:" + signe + "\n";
+                return valeur + " de Pique(" + signe + ")\n";
             case 1:
-                return "Carte: " + valeur + ", Carreau:" + signe + "\n";
+                return valeur + " de Carreau(" + signe + ")\n";
             case 2:
-                return "Carte: " + valeur + ", Trefle:" + signe + "\n";
+                return valeur + " de Trefle(" + signe + ")\n";
             case 3:
-                return "Carte: " + valeur + ", Coeur:" + signe + "\n";
+                return valeur + " de Coeur(" + signe + ")\n";
             case 4:
-                return "Carte: " + valeur + ", AS:" + signe + "\n";
+                return valeur + " d'AS(" + signe + ")\n";
         }
-        return "error toString, Carte :"+valeur+"signe :"+signe+ "\n";
+        return "error toString, Carte :"+valeur+"signe :"+signe+ ")\n";
     }
 
 }
