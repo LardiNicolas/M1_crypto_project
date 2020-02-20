@@ -20,7 +20,7 @@ public class ex1 {
         ArrayList<Carte> deckRandom = genkey(deck); //Deck de carte de base organisé aléatoirement
 
         //afficheCle(deckRandom);
-        operation(deck);
+        operation(deckRandom);
         //afficheCle(deckRandom);
         //affichageDeck(deck);
         //afficheCle(deckRandom);
@@ -95,6 +95,7 @@ public class ex1 {
             }
         }
 
+        //TESTER MODULO pour plus tard (autre méthode)
         if (bool == false) {
             if (index != listeCarte.size() - 2) {
                 System.out.println("DEPLACEMENT DU JOKER ROUGE: [1,4] de la position " + index + " à la position " + (index + 2));
@@ -110,20 +111,59 @@ public class ex1 {
                 bool = true;
             }
         }
+
+        // OPERATION 3 : Double coupe par rapport aux jokers. Vouz repérez les deux jokers et vous intervertissez le paquet des
+        //cartes situées au-dessus du joker qui est en premier avec le paquet de cartes qui est au-dessous du joker
+        //qui est en second. Dans cette opération la couleur des jokers est sans importance.
+
+        //etape 1:
+        int indexJoker1=0;
+        int indexJoker2=0;
+        bool = false;
+        for (Carte c : listeCarte) {
+            int signeCarte = c.getSigne();
+            int valeurCarte = c.getValeur();
+            //reperage du premier joker puis du second
+            if (signeCarte == 4 && valeurCarte == 1 && bool == false || signeCarte == 4 && valeurCarte == 2 && bool == false) {
+                indexJoker1 = listeCarte.indexOf(c);
+                bool = true;
+            }else if (signeCarte == 4 && valeurCarte == 1 || signeCarte == 4 && valeurCarte == 2) {
+                indexJoker2 = listeCarte.indexOf(c);
+            }
+        }
+
+        ArrayList<Carte> listTemp1 = new ArrayList<Carte>();
+        ArrayList<Carte> listTemp2 = new ArrayList<Carte>();
+
+        for(int i = 0; i < indexJoker1;i++){
+            Carte element = listeCarte.get(0);
+            listeCarte.remove(0);
+            listTemp1.add(element);
+        }
+        System.out.println("indexJoker1 = "+ indexJoker1+"\nlisteTemp1 = \n"+ listTemp1);
+
+
+
+        //OPERTION 4 : Coupe simple déterminée par la dernière carte : vous regardez la dernière carte et vous évaluez son
+        //numéro selon l’ordre du Bridge : trèfle-carreau-cœur-pique et dans chaque couleur as, 2, 3, 4, 5, 6, 7, 8,
+        //9, 10, valet, dame et roi (l’as de trèfle a ainsi le numéro 1, le roi de pique a le numéro 52). Les jokers on
+        //par convention le numéro 53. Si le numéro de la dernière carte est n vous prenez les n premières cartes
+        //du dessus du paquet et les placez derrière les autres cartes à l’exception de la dernière carte qui reste la
+        //dernière.
     }
-    //REVOIR POUR -1
+
     public static void move(ArrayList<Carte> listeCarte, int depart, int destination) {
         int delta = destination-depart;
         if (depart < destination) {
-            System.out.println("(+)swap avec écart de : "+delta);
+            //System.out.println("(+)swap avec écart de : "+delta);
             Collections.swap(listeCarte, depart, depart + 1);
             move(listeCarte,depart+1,destination);
         } else if(depart > destination){
-            System.out.println("(-)swap avec écart de : "+delta);
+            //System.out.println("(-)swap avec écart de : "+delta);
             Collections.swap(listeCarte, depart, depart - 1);
             move(listeCarte,depart-1,destination);
         }else{
-            System.out.println("(=)destination atteinte");
+            //System.out.println("(=)destination atteinte");
         }
     }
 
