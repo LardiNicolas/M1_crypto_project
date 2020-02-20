@@ -20,7 +20,7 @@ public class ex1 {
         ArrayList<Carte> deckRandom = genkey(deck); //Deck de carte de base organisé aléatoirement
 
         //afficheCle(deckRandom);
-        operation(deckRandom);
+        operation(deck);
         //afficheCle(deckRandom);
         //affichageDeck(deck);
         //afficheCle(deckRandom);
@@ -96,7 +96,7 @@ public class ex1 {
         }
 
         if (bool == false) {
-            if (index != listeCarte.size() - 1) {
+            if (index != listeCarte.size() - 2) {
                 System.out.println("DEPLACEMENT DU JOKER ROUGE: [1,4] de la position " + index + " à la position " + (index + 2));
                 move(listeCarte, index, index + 2);
                 bool = true;
@@ -112,13 +112,18 @@ public class ex1 {
         }
     }
     //REVOIR POUR -1
-    public static void move(ArrayList<Carte> listeCarte, int fromPosition, int toPosition) {
-        if (fromPosition < toPosition) {
-            listeCarte.add(toPosition, listeCarte.get(fromPosition));
-            listeCarte.remove(fromPosition);
-        } else {
-            listeCarte.add(toPosition, listeCarte.get(fromPosition));
-            listeCarte.remove(fromPosition + 1);
+    public static void move(ArrayList<Carte> listeCarte, int depart, int destination) {
+        int delta = destination-depart;
+        if (depart < destination) {
+            System.out.println("(+)swap avec écart de : "+delta);
+            Collections.swap(listeCarte, depart, depart + 1);
+            move(listeCarte,depart+1,destination);
+        } else if(depart > destination){
+            System.out.println("(-)swap avec écart de : "+delta);
+            Collections.swap(listeCarte, depart, depart - 1);
+            move(listeCarte,depart-1,destination);
+        }else{
+            System.out.println("(=)destination atteinte");
         }
     }
 
