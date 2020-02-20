@@ -19,9 +19,9 @@ public class ex1 {
         ArrayList<Carte> deck = genDeck(); //Deck de carte de base
         ArrayList<Carte> deckRandom = genkey(deck); //Deck de carte de base organisé aléatoirement
 
-        afficheCle(deckRandom);
+        //afficheCle(deckRandom);
         operation(deckRandom);
-        afficheCle(deckRandom);
+        //afficheCle(deckRandom);
         //affichageDeck(deck);
         //afficheCle(deckRandom);
         //affichageDeck(deckRandom);
@@ -66,46 +66,60 @@ public class ex1 {
         //OPERATION 1 : Recul du joker noir d'une position, si le joker noir est en dernière position il passe derrière la carte du
         //dessus (donc, en deuxième position)
         boolean bool = false;
-        int i = 0;
-        do {
-            int signeCarte = listeCarte.get(i).getSigne();
-            int valeurCarte = listeCarte.get(i).getValeur();
-
-            if (signeCarte == 4 && valeurCarte == 2 && i != listeCarte.size() - 1) {
-                System.out.println("SWAP DE L'AS NOIR: [" + valeurCarte + "," + signeCarte + "] de la position " + i + " à la position " + (i + 1));
-                Collections.swap(listeCarte, i, i + 1);
-                bool = true;
-            } else if (signeCarte == 4 && valeurCarte == 2 && i == listeCarte.size() - 1) {
-                System.out.println("SWAP DE L'AS NOIR: [" + valeurCarte + "," + signeCarte + "] de la position " + i + " à la position " + 1);
-                Collections.swap(listeCarte, i, 1);
-                bool = true;
+        for (Carte c : listeCarte) {
+            int signeCarte = c.getSigne();
+            int valeurCarte = c.getValeur();
+            if (signeCarte == 4 && valeurCarte == 2 && bool == false) {
+                int index = listeCarte.indexOf(c);
+                if (index != listeCarte.size() - 1) {
+                    System.out.println("SWAP DU JOKER NOIR: [2,4] de la position " + index + " à la position " + (index + 1));
+                    Collections.swap(listeCarte, index, index + 1);
+                    bool = true;
+                } else if (index == listeCarte.size() - 1) {
+                    System.out.println("SWAP DU JOKER NOIR: [2,4] de la position " + index + " à la position " + 1);
+                    Collections.swap(listeCarte, index, 1);
+                    bool = true;
+                }
             }
-            i++;
-        } while (bool == false);
-
+        }
         //OPERATION 2 : Recul du joker rouge de deux positions : Vous faites reculer le joker rouge de deux cartes. S’il était en
         //dernière position, il passe en troisième position; s’il était en avant dernière position il passe en deuxième.
-        boolean bool = false;
-        int i = 0;
-        do {
-            int signeCarte = listeCarte.get(i).getSigne();
-            int valeurCarte = listeCarte.get(i).getValeur();
 
-            if (signeCarte == 4 && valeurCarte == 1 && i != listeCarte.size() - 1) {
-                System.out.println("SWAP DE L'AS ROUGE: [" + valeurCarte + "," + signeCarte + "] de la position " + i + " à la position " + (i + 1));
-                Collections.swap(listeCarte, i, i + 2);
+        int index = 0;
+        bool = false;
+        for (Carte c : listeCarte) {
+            int signeCarte = c.getSigne();
+            int valeurCarte = c.getValeur();
+            if (signeCarte == 4 && valeurCarte == 1) {
+                index = listeCarte.indexOf(c);
+            }
+        }
+
+        if (bool == false) {
+            if (index != listeCarte.size() - 1) {
+                System.out.println("DEPLACEMENT DU JOKER ROUGE: [1,4] de la position " + index + " à la position " + (index + 2));
+                move(listeCarte, index, index + 2);
                 bool = true;
-            } else if (signeCarte == 4 && valeurCarte == 1 && i == listeCarte.size() - 1) {
-                System.out.println("SWAP DE L'AS ROUGE: [" + valeurCarte + "," + signeCarte + "] de la position " + i + " à la position " + 2);
-                Collections.swap(listeCarte, i, 2);
+            } else if (index == listeCarte.size() - 2) {
+                System.out.println("DEPLACEMENT DU JOKER ROUGE: [1,4] de la position " + index + " à la position " + 1);
+                move(listeCarte, index, 1);
                 bool = true;
-            } else if (signeCarte == 4 && valeurCarte == 1 && i == listeCarte.size() - 2) {
-                System.out.println("SWAP DE L'AS ROUGE: [" + valeurCarte + "," + signeCarte + "] de la position " + i + " à la position " + 1);
-                Collections.swap(listeCarte, i, 1);
+            } else if (index == listeCarte.size() - 1) {
+                System.out.println("DEPLACEMENT DU JOKER ROUGE: [1,4] de la position " + index + " à la position " + 2);
+                move(listeCarte, index, 2);
                 bool = true;
             }
-            i++;
-        } while (bool == false);
+        }
+    }
+    //REVOIR POUR -1
+    public static void move(ArrayList<Carte> listeCarte, int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            listeCarte.add(toPosition, listeCarte.get(fromPosition));
+            listeCarte.remove(fromPosition);
+        } else {
+            listeCarte.add(toPosition, listeCarte.get(fromPosition));
+            listeCarte.remove(fromPosition + 1);
+        }
     }
 
     private static String crypt(int[] m, int[] c) {
