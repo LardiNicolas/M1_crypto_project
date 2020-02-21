@@ -43,8 +43,9 @@ public class ex1 {
         }
     }
 
+
     /*
-     *Fonction permettant de l'affichage de la clé de chiffrement
+     *Fonction permettant l'affichage de la clé de chiffrement
      */
     private static void afficheCle(ArrayList<Carte> listeCarte) {
         int cpt = 0;
@@ -69,17 +70,17 @@ public class ex1 {
         for (Carte c : listeCarte) {
             int signeCarte = c.getSigne();
             int valeurCarte = c.getValeur();
-            if (signeCarte == 4 && valeurCarte == 2 && bool == false) {
+            if (signeCarte == 4 && valeurCarte == 2 && !bool) {
                 int index = listeCarte.indexOf(c);
-                if (index != listeCarte.size() - 1) {
+                int tailleDeck = listeCarte.size() - 1;
+                if (index != tailleDeck) {
                     System.out.println("SWAP DU JOKER NOIR: [2,4] de la position " + index + " à la position " + (index + 1));
                     Collections.swap(listeCarte, index, index + 1);
-                    bool = true;
-                } else if (index == listeCarte.size() - 1) {
+                } else {
                     System.out.println("SWAP DU JOKER NOIR: [2,4] de la position " + index + " à la position " + 1);
                     Collections.swap(listeCarte, index, 1);
-                    bool = true;
                 }
+                bool = true;
             }
         }
         //OPERATION 2 : Recul du joker rouge de deux positions : Vous faites reculer le joker rouge de deux cartes. S’il était en
@@ -96,7 +97,7 @@ public class ex1 {
         }
 
         //TESTER MODULO pour plus tard (autre méthode)
-        if (bool == false) {
+        if (!bool) {
             if (index != listeCarte.size() - 2) {
                 System.out.println("DEPLACEMENT DU JOKER ROUGE: [1,4] de la position " + index + " à la position " + (index + 2));
                 move(listeCarte, index, index + 2);
@@ -116,33 +117,30 @@ public class ex1 {
         //cartes situées au-dessus du joker qui est en premier avec le paquet de cartes qui est au-dessous du joker
         //qui est en second. Dans cette opération la couleur des jokers est sans importance.
 
-        //etape 1:
-        int indexJoker1=0;
-        int indexJoker2=0;
-        bool = false;
+        //etape 1: Repérage des indexes des jokers
+        int indexJoker1 = 0;
+        int indexJoker2 = 0;
+        bool = false;   //true si on a trouvé le premier
         for (Carte c : listeCarte) {
             int signeCarte = c.getSigne();
             int valeurCarte = c.getValeur();
-            //reperage du premier joker puis du second
-            if (signeCarte == 4 && valeurCarte == 1 && bool == false || signeCarte == 4 && valeurCarte == 2 && bool == false) {
+            if (signeCarte == 4 && (valeurCarte == 1 || valeurCarte == 2) && !bool) {
                 indexJoker1 = listeCarte.indexOf(c);
                 bool = true;
-            }else if (signeCarte == 4 && valeurCarte == 1 || signeCarte == 4 && valeurCarte == 2) {
+            } else if (signeCarte == 4 && (valeurCarte == 1 || valeurCarte == 2)) {
                 indexJoker2 = listeCarte.indexOf(c);
             }
         }
 
-        ArrayList<Carte> listTemp1 = new ArrayList<Carte>();
-        ArrayList<Carte> listTemp2 = new ArrayList<Carte>();
+        ArrayList<Carte> listDebut = new ArrayList<Carte>(listeCarte.subList(0, indexJoker1));
+        ArrayList<Carte> listMilieu = new ArrayList<Carte>(listeCarte.subList(indexJoker1, indexJoker2));
+        ArrayList<Carte> listFin = new ArrayList<Carte>(listeCarte.subList(indexJoker1, listeCarte.size() - 1));
 
-        for(int i = 0; i < indexJoker1;i++){
-            Carte element = listeCarte.get(0);
-            listeCarte.remove(0);
-            listTemp1.add(element);
-        }
-        System.out.println("indexJoker1 = "+ indexJoker1+"\nlisteTemp1 = \n"+ listTemp1);
-
-
+        System.out.println("indexJoker1 = " + indexJoker1 + "\nlisteTemp1 = \n" + listDebut);
+        listeCarte.clear();
+        listeCarte.addAll(listFin);
+        listeCarte.addAll(listMilieu);
+        listeCarte.addAll(listDebut);
 
         //OPERTION 4 : Coupe simple déterminée par la dernière carte : vous regardez la dernière carte et vous évaluez son
         //numéro selon l’ordre du Bridge : trèfle-carreau-cœur-pique et dans chaque couleur as, 2, 3, 4, 5, 6, 7, 8,
@@ -150,19 +148,34 @@ public class ex1 {
         //par convention le numéro 53. Si le numéro de la dernière carte est n vous prenez les n premières cartes
         //du dessus du paquet et les placez derrière les autres cartes à l’exception de la dernière carte qui reste la
         //dernière.
+
+        Carte derniereCarte = listeCarte.get(listeCarte.size() - 1);
+        int eval=derniereCarte.evalBridge();
+        listDebut = new ArrayList<Carte>(listeCarte.subList(0, eval));
+        listFin = new ArrayList<Carte>(listeCarte.subList(eval, listeCarte.size() - 1));
+        listeCarte.clear();
+        listeCarte.addAll(listFin);
+        listeCarte.addAll(listDebut);
+        listeCarte.add(derniereCarte);
+
+        //OPERATION 5 :Lecture d’une lettre pseudo-aléatoire : Vous regardez le numéro de la première carte, soit n ce numéro.
+        //Vous comptez n cartes à partir du d´ebut et vous regardez la carte à laquelle vous êtes arrivé (la n + 1-ième),
+        // soit m son numero. Si c’est un jokers vous refaites une opération complète de mélange et de lecture
+        //(les points 1-2-3-4-5). Si m dépasse 26 vous soustrayez 26. Au nombre entre 1 et 26 ainsi obtenu est
+        //associée une lettre qui est la lettre suivante dans du flux de clefs.
     }
 
     public static void move(ArrayList<Carte> listeCarte, int depart, int destination) {
-        int delta = destination-depart;
+        int delta = destination - depart;
         if (depart < destination) {
             //System.out.println("(+)swap avec écart de : "+delta);
-            Collections.swap(listeCarte, depart, depart + 1);
-            move(listeCarte,depart+1,destination);
-        } else if(depart > destination){
+            Collections.swap(listeCarte, depart, depart + 1); //FIXME Erreur quand on a l'index 54
+            move(listeCarte, depart + 1, destination);
+        } else if (depart > destination) {
             //System.out.println("(-)swap avec écart de : "+delta);
             Collections.swap(listeCarte, depart, depart - 1);
-            move(listeCarte,depart-1,destination);
-        }else{
+            move(listeCarte, depart - 1, destination);
+        } else {
             //System.out.println("(=)destination atteinte");
         }
     }
@@ -193,19 +206,14 @@ public class ex1 {
                 res.add(c);
             }
         }
-        Carte joker1 = new Carte(1, 4); //joker rouge
-        Carte joker2 = new Carte(2, 4); //joker noir
-        res.add(joker1);
-        res.add(joker2);
+        res.add(new Carte(1, 4));//joker rouge
+        res.add(new Carte(2, 4));//joker noir
         return res;
     }
 
 
     private static ArrayList<Carte> genkey(ArrayList<Carte> listeCarte) {
-        ArrayList<Carte> res = new ArrayList<Carte>();
-        for (Carte c : listeCarte) {
-            res.add(c);
-        }
+        ArrayList<Carte> res = new ArrayList<Carte>(listeCarte);
         Collections.shuffle(res);
         return res;
     }
